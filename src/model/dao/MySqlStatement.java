@@ -1,0 +1,132 @@
+package model.dao;
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * 
+ * @author Aaryn
+ */
+public class MySqlStatement {
+
+	private static final String driver = "com.mysql.jdbc.Driver";
+	private static final String url = "jdbc:mysql://172.16.3.131:3306/salesdatabase";
+	private static final String USER_NAME = "root";
+	private static final String PASS_WORD = "Ab123456";
+
+	private static Connection conn;
+
+	static {
+		initConnection();
+	}
+
+	public static boolean doTransaction(List<String> queriesList) {
+
+		Statement statement;
+		try {
+			conn.setAutoCommit(false);
+			for (String query : queriesList) {
+				statement = conn.createStatement();
+				statement.executeUpdate(query);
+			}
+			conn.commit();
+			return true;
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	public static ResultSet executeSqlQuery(String query) {
+
+		ResultSet rs = null;
+		try {
+			Statement statement = conn.createStatement();
+			String sql = query;
+			rs = statement.executeQuery(sql);
+		} catch (SQLException ex) {
+			Logger.getLogger(MySqlStatement.class.getName()).log(Level.SEVERE,
+					null, ex);
+		}
+		return rs;
+	}
+
+	public static int executeSqlUpdate(String query) {
+
+		int result = 0;
+
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String sql = query;
+			result = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	private static void initConnection() {
+		if (conn == null) {
+			try {
+				Class.forName(driver);
+				conn = DriverManager.getConnection(url, USER_NAME, PASS_WORD);
+				if (!conn.isClosed()) {
+					System.out.println("Load successful..");
+				}
+			} catch (SQLException ex) {
+				Logger.getLogger(MySqlStatement.class.getName()).log(
+						Level.SEVERE, null, ex);
+			} catch (ClassNotFoundException ex) {
+				Logger.getLogger(MySqlStatement.class.getName()).log(
+						Level.SEVERE, null, ex);
+			}
+		}
+	}
+
+	protected static void stop() {
+		try {
+			conn.close();
+		} catch (SQLException ex) {
+			Logger.getLogger(MySqlStatement.class.getName()).log(Level.SEVERE,
+					null, ex);
+		}
+	}
+
+	public void closeConnections() {
+		MySqlStatement.stop();
+	}
+
+	public static void stop(ResultSet rs) {
+		try{
+			rs.close();
+			conn.close();
+		}catch(SQLException ex){
+			Logger.getLogger(MySqlStatement.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+}

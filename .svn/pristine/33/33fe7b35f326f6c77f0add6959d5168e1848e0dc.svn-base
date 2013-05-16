@@ -1,0 +1,25 @@
+/* CSS file */
+
+Application
+{
+	backgroundGradientAlphas: 1.0, 1.0;
+	backgroundGradientColors: #F8F9BD, #F0F1A0;
+}
+Button
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #D2F4BA, #EBF398;
+}
+Label
+{
+	fontFamily: "Times New Roman";
+	fontSize: 12;
+	fontWeight: bold;
+}
+@font-face
+{
+	fontFamily: Webdings;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Webdings");
+}

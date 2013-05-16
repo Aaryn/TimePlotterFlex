@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexProperties flexServerType="8" flexWarLocation="C:/apache-tomcat-6.0.14/webapps/lcds.war" serverContextRoot="/WebContent" serverRoot="D:/Aaryn/workspace/webTimeSeriesPlotter/WebContent" serverRootURL="http://localhost:8080/webTimeSeriesPlotter" toolCompile="true" useServerFlexSDK="false" version="1"/>

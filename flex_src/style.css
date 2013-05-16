@@ -1,0 +1,196 @@
+/* CSS file */
+
+Application
+{
+	backgroundColor:#f9f6d9;
+	borderSkin:Embed(source="images/newBackground1.png");
+	backgroundRepeat:repeat-x;
+	color: #ffffff;
+	
+	fontSharpness:21;
+	fontThickness:-120;
+	themeColor:#d5610d;
+}
+
+Alert{
+	color:#2b2a25;
+	backgroundColor: #c4c2ad;
+}
+.tabs{
+	fontThickness:0;
+	cornerRadius:8;
+	color:#ffffff;
+	fontSize:17;
+	fontSharpness:21;
+	highlightAlphas: 0, 0;
+	fillAlphas: 1, 1;
+	fillColors: #939075, #a8a58b;
+	themeColor: #c4c2ad;
+	borderColor: #a8a58b;
+}
+.selectedTab{
+	color:#2b2a25;
+}
+Button
+{
+	fillAlphas: 1.0, 1.0;
+	fillColors: #D2F4BA, #EBF398;
+	upSkin: Embed(source="images/button_up.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+	overSkin: Embed(source="images/button_over.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+	downSkin: Embed(source="images/button_over.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+	disabledSkin: Embed(source="images/button_disabled.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+	selectedUpSkin: Embed(source="images/button_over.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+	selectedOverSkin: Embed(source="images/button_over.png",scaleGridLeft=12, scaleGridRight=13, scaleGridTop=13,scaleGridBottom=14);
+}
+Label
+{
+	fontFamily: Dakota;
+	fontSize: 21;
+	fontWeight: bold;
+	textAlign: center;
+	textRollOverColor:#ffffff;
+	textSelectedColor:#dddddd;
+	paddingRight:15;
+	paddingTop:16;
+	paddingBottom:-5;
+	color:#a5a287;
+}
+@font-face
+{
+	fontFamily: Webdings;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Webdings");
+}
+Panel
+{
+	borderStyle: solid;
+   borderColor: #E1D9F6;
+   borderAlpha: 1;
+   roundedBottomCorners: true;
+   cornerRadius: 10;
+   headerHeight: 55;
+   backgroundAlpha: 1;
+   highlightAlphas: 0.44, 0.08;
+   headerColors: #d5610d, #d5610d;
+   backgroundColor: #73715c;
+   dropShadowEnabled: true;
+   shadowDistance: 0;
+   shadowDirection: right;
+   titleStyleName: "panelTitle";
+   titleBackgroundSkin:Embed(source="images/panelHeader.png", scaleGridLeft=12, scaleGridRight=13, scaleGridTop=30,scaleGridBottom=31);
+   statusStyleName: panelStatus;
+	controlBarStyleName: panelControlBar;
+}
+.panelTitle
+{
+	color: #ffffff;
+   fontSize: 13;
+   fontFamily: Dakota;
+}
+@font-face
+{
+	fontFamily: "Times New Roman";
+	fontWeight: bold;
+	fontStyle: normal;
+	src: local("Times New Roman");
+}
+.panelStatus
+{
+}
+.panelControlBar
+{
+}
+
+ComboBox
+{
+	upSkin: Embed(source="images/dropDown.png", scaleGridLeft=12, scaleGridRight=87, scaleGridTop=16,scaleGridBottom=17);
+	overSkin: Embed(source="images/dropDown_over.png", scaleGridLeft=12, scaleGridRight=87, scaleGridTop=16,scaleGridBottom=17);
+	downSkin: Embed(source="images/dropDown_over.png", scaleGridLeft=12, scaleGridRight=87, scaleGridTop=16,scaleGridBottom=17);
+	dropdownStyleName: comboBoxDropdown;
+	color:#73715c;
+	fontSize:12;
+	
+}
+LineChart
+{
+	textAlign: center;
+	gridLinesStyleName: lineChartGridLines;
+	color: #995425;
+}
+TextInput
+{
+	cornerRadius:5;
+	focusAlpha:0.3;
+	textIndent:5;
+	fontSize:12;
+	fontFamily:Verdana;
+	themeColor:#eac56c;
+	borderSkin: Embed(source="images/textInput.png", scaleGridLeft=12, scaleGridRight=115, scaleGridTop=12,scaleGridBottom=13);
+}
+TileList{
+	backgroundColor: #73715c;
+	themeColor: #73715c;
+	borderStyle:none;
+	left:5;
+	right:0;
+	verticalScrollBarStyleName:scroll;
+	top:0;
+	bottom:262;
+	columnWidth:142;
+	rowHeight:122;
+	rollOverColor:#918e72;
+	selectionColor:#545345;
+}
+ScrollBar{
+	trackSkin:Embed(source="images/scrollTrack.png");
+	thumbUpSkin: Embed(source="images/thumb.png", scaleGridLeft=12, scaleGridRight=13, scaleGridTop=4,scaleGridBottom=174);
+	thumbOverSkin:Embed(source="images/thumbOver.png", scaleGridLeft=12, scaleGridRight=13, scaleGridTop=4,scaleGridBottom=174);
+	thumbDownSkin:Embed(source="images/thumbOver.png", scaleGridLeft=12, scaleGridRight=13, scaleGridTop=4,scaleGridBottom=174);
+	upArrowUpSkin:Embed(source="images/upArrowUp.png");
+	upArrowDownSkin:Embed(source="images/upArrowOver.png");
+	upArrowOverSkin:Embed(source="images/upArrowOver.png");
+	downArrowUpSkin:Embed(source="images/downArrowUp.png");
+	downArrowDownSkin:Embed(source="images/downArrowOver.png");
+	downArrowOverSkin:Embed(source="images/downArrowOver.png"); 
+}
+@font-face
+{
+	fontFamily: David;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("David");
+}
+@font-face
+{
+	fontFamily: Dakota;
+	fontWeight: bold;
+	fontStyle: normal;
+	src: local("Dakota");
+}
+@font-face
+{
+	fontFamily: Dakota;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Dakota");
+}
+.lineChartGridLines
+{
+}
+RadioButton
+{
+	fontFamily: Arial;
+	fillAlphas: 1.0, 0.78, 0.78, 0.78;
+	fillColors: #ED8A42, #A8ACA4;
+	
+}
+ColumnChart
+{
+	textAlign: right;
+	color:#995425
+}
+.comboBoxDropdown
+{
+}
+	

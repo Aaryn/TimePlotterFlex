@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#F4EECB, #F8EBC3]">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable]
+			private var dataColume:ArrayCollection;
+			private function columnData():void{
+				dataColume = ArrayCollection(volume.getVolumeData());
+			}
+			private function volumeResult(event:ResultEvent):void{
+				columechart1.dataProvider = event.result;
+			}
+//			private function handleFault(event:FaultEvent):void{
+//				Alert.show(event.fault.toString());
+//			}
+		]]>
+	</mx:Script>
+	<mx:SolidColor id="sc1" color="yellow" alpha=".8"/>
+	<mx:Stroke id="s1" color="yellow" weight="2"/>
+	
+	<mx:RemoteObject id="volume" destination="volumnData" result="volumeResult(event)">
+		
+	</mx:RemoteObject>
+	<mx:ColumnChart showDataTips="true"  x="108" y="24" id="columechart1" height="270" creationComplete="columnData()" width="80%">
+	<mx:horizontalAxis>
+		<mx:CategoryAxis categoryField="date">
+			
+		</mx:CategoryAxis>
+	</mx:horizontalAxis>
+		<mx:series>
+			<mx:ColumnSeries displayName="Volume" yField="linenum" fill="{sc1}" stroke="{s1}"/>
+		</mx:series>
+	</mx:ColumnChart>
+	<mx:Legend dataProvider="{columechart1}" x="108" y="302"/>
+	
+	
+</mx:Application>

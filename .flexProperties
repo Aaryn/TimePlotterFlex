@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexProperties flexServerType="8" flexWarLocation="C:/apache-tomcat-6.0.14/webapps/lcds.war" serverContextRoot="/testPlotter" serverRoot="E:/workspace/testPlotter/WebContent" serverRootURL="http://localhost:8080/" toolCompile="true" useServerFlexSDK="false" version="1"/>

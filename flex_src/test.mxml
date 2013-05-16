@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" applicationComplete="init()">
+<mx:Script>
+	<![CDATA[
+		import mx.formatters.DateFormatter;
+		import mx.rpc.events.FaultEvent;
+		import mx.collections.ArrayCollection;
+		
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+		[Bindable]
+		private var dataLine1:ArrayCollection = new ArrayCollection(
+		[
+		{sales : "1689.03", linenum : "1"},
+		{sales : "3390.0", linenum : "2"},
+		{sales : "5151.0", linenum : "3"}
+		]
+		);
+		[Bindable]
+		private var dataLine:ArrayCollection;
+		private function init():void
+		{
+			lineData.getLineData();
+		}
+		
+		private function getData():void
+		{
+			var text:String = txtNum.text;
+			var start:Date = startDate.selectedDate;
+			var end:Date = endDate.selectedDate;
+			var sTime:String = DateField.dateToString(start,"YYYY-MM-DD");
+			var eTime:String = DateField.dateToString(end,"YYYY-MM-DD");
+			lineData.getCloseData(text,sTime,eTime);
+			volumn.getVolumeData(text,sTime,eTime);
+		}
+		
+		private function handleResult(event:ResultEvent):void
+		{
+			lineChart2.dataProvider = event.result;
+			if(cmbTI.selectedLabel!=null){
+				var type:String = cmbTI.selectedLabel;
+				
+				if(type=="EMA"){
+					calData(ArrayCollection(event.result), type);
+				}
+			}
+		}
+		private var dataColume:ArrayCollection;
+		private function columnData():void{
+			dataColume = ArrayCollection(volumn.getVolumeData());
+		}		
+		private function volumeResult(event:ResultEvent):void
+		{
+			columnchart1.dataProvider = event.result;
+			
+			
+		}
+		
+		private function calData(data:ArrayCollection, type:String):void
+		{
+			var addData:ArrayCollection = new ArrayCollection();
+			var period:Number = Number(radiogroup2.selectedValue);
+			if(type=="EMA")
+			{
+				for(var i:Number=period; i<data.length; i++){
+					var obj:Object = new Object();
+					obj.date=data.getItemAt(i).date;
+					var total:Number = Number(data.getItemAt(i).linenum);
+					for(var j:Number=1;j<period;j++){
+						total = total+Number(data.getItemAt(i-j).linenum);
+					}
+					obj.ave=total/period;
+					addData.addItem(obj);				
+				}
+				aveLS.dataProvider = addData;
+				
+			}
+		}
+		
+		private function faultResult(event:FaultEvent):void
+		{
+			Alert.show(String(event.fault));
+		}
+		
+		private function changDate():void {
+			var date:Date = startDate.selectedDate;
+            if (date == null){
+            
+            }                           
+            else{
+            	
+            	endDate.selectedDate = getNextDate(date,true);
+            
+            }
+//                selection.text = "Date selected: " + date.getFullYear().toString() + 
+//                    '/' + (date.getMonth()+1).toString() + '/' + date.getDate();
+         }
+         
+         private function changDateBefore():void {
+         	var date:Date = endDate.selectedDate;
+            if (date == null){          
+            }                           
+            else{          	
+            	startDate.selectedDate = getNextDate(date,false);        
+            }
+         }
+         
+         
+         private function getNextDate(date:Date, isAdd:Boolean):Date{
+         	var select:String = String(radiogroup1.selectedValue);
+         	var newDate:Date = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+         	if(isAdd){
+         		if(select=="5"){
+         			newDate.setDate(newDate.getDate()+4); 
+         		}
+         		if(select=="7"){
+         			newDate.setDate(newDate.getDate()+6);
+         		}
+         		if(select=="30"){
+         			newDate.setMonth(newDate.getMonth()+1);
+         		}
+         		if(select=="365"){
+         			newDate.setFullYear(newDate.getFullYear()+1);
+         		}
+         	}
+         	else{
+         		if(select=="5"){
+         			newDate.setDate(newDate.getDate()-4);
+         		}
+         		if(select=="7"){
+         			newDate.setDate(newDate.getDate()-6);
+         		}
+         		if(select=="30"){
+         			newDate.setMonth(newDate.getMonth()-1);
+         		}
+         		if(select=="365"){
+         			newDate.setFullYear(newDate.getFullYear()-1);
+         		}
+         	}        	       	
+         	return newDate;
+         }
+         [Bindable]
+            public var indicators:ArrayCollection = new ArrayCollection(
+                [ {label:"MA", data:1}, 
+                  {label:"EMA", data:2}, 
+                  {label:"RSI", data:3},
+                  {label:"MFI", data:4}
+                ]);
+         private function closeHandler(event:Event):void{
+         	tITxt.text = "You selected: " + ComboBox(event.target).selectedItem.label;
+         	myData.text = "Data: " +  ComboBox(event.target).selectedItem.data;
+         }
+         private function calculate():void{
+         	var text:String = txtNum.text;
+         	var start:Date = startDate.selectedDate;
+         	var end:Date = endDate.selectedDate;
+         	var sTime:String = DateField.dateToString(start,"YYYY-MM-DD");
+         	var eTime:String = DateField.dateToString(end,"YYYY-MM-DD");
+         	var tI:String = cmbTI.selectedLabel;
+         	var select:String = String(radiogroup2.selectedValue);
+         	
+         	
+         }
+         
+         private function changePeriod():void
+         {
+         	if(cmbTI.selectedLabel!=null){
+				var type:String = cmbTI.selectedLabel;
+				calData(ArrayCollection(lineChart2.dataProvider),type);
+         	}
+         	
+         }
+
+		
+	]]>
+</mx:Script>
+<mx:RemoteObject id="lineData" destination="lineData" result="handleResult(event)" >
+	
+</mx:RemoteObject>
+<mx:RemoteObject id="volumn" destination="volumnData" result="volumeResult(event)" fault="faultResult(event)">
+	
+</mx:RemoteObject>
+	
+		<mx:LineChart id="lineChart2" showDataTips="true" width="572" height="224" creationComplete="init()" x="398" y="36">
+		<mx:horizontalAxis>
+    <mx:CategoryAxis  categoryField="date"/>
+   </mx:horizontalAxis>
+   <mx:series>
+    <mx:LineSeries yField="linenum" displayName="Price"/>
+    <mx:LineSeries yField="ave" xField="date" id="aveLS" displayName="Average"/>
+   </mx:series>
+	</mx:LineChart>
+	<mx:Legend dataProvider="{lineChart2}" width="89" height="23" x="466" y="281"/>
+	<mx:Button x="244" y="124" label="Button" id="okBtn" click="getData()"/>
+	<mx:TextInput x="149" y="75" id="txtNum"/>
+	<mx:Label x="59" y="77" text="orderNumber:"/>
+	<mx:SolidColor id="sc1" color="yellow" alpha=".8"/>
+	<mx:Stroke id="s1" color="yellow" weight="2"/>
+	<mx:ColumnChart x="398" y="329" id="columnchart1" height="220" width="572" showDataTips="true" creationComplete="columnData()">
+	<mx:horizontalAxis>
+		<mx:CategoryAxis categoryField="date">
+			
+		</mx:CategoryAxis>
+	</mx:horizontalAxis>
+		<mx:series>
+			<mx:ColumnSeries displayName="Volume" yField="linenum" fill="{sc1}" stroke="{s1}"/>
+		</mx:series>
+	</mx:ColumnChart>
+	<mx:Legend dataProvider="{columnchart1}" x="466" y="566"/>
+	<mx:DateField x="59" y="209" id="startDate" change="changDate()"/>
+
+	<mx:DateField x="191" y="210" id="endDate"  change="changDateBefore()"/>
+	<mx:Label x="157" y="204" text="to" height="33" fontFamily="Times New Roman" fontSize="25" width="35" textAlign="center" fontWeight="normal"/>
+	<mx:RadioButtonGroup id="radiogroup1" />
+	<mx:RadioButton x="59" y="165" label="5D" groupName="radiogroup1" value="5" selected="true"/>
+	<mx:RadioButton x="107" y="165" label="1W" groupName="radiogroup1" value="7"/>
+	<mx:RadioButton x="158" y="165" label="1M" groupName="radiogroup1" value="30"/>
+	<mx:RadioButton x="207" y="165" label="1Y" groupName="radiogroup1" value="365"/>
+	<mx:ComboBox x="44" y="297" close="closeHandler(event);" width="145" dataProvider="{indicators}" id="cmbTI">
+	</mx:ComboBox>
+	<mx:Label x="53" y="268" text="Technical indicators" id="tITxt"/>
+	<mx:Label x="53" y="327" text="Label" id="myData"/>
+	<mx:RadioButtonGroup id="radiogroup2" change="changePeriod()"/>
+	<mx:RadioButton x="47" y="356" label="5D" value="5" groupName="radiogroup2"/>
+	<mx:RadioButton x="89" y="356" label="10D" value="10" groupName="radiogroup2"/>
+	<mx:RadioButton x="138" y="356" label="1M" value="30" groupName="radiogroup2"/>
+	<mx:RadioButton x="47" y="377" label="2M" value="60" groupName="radiogroup2"/>
+	<mx:RadioButton x="89" y="377" label="6M" value="180" groupName="radiogroup2"/>
+	<mx:RadioButton x="138" y="377" label="250D" value="250" groupName="radiogroup2"/>
+</mx:Application>

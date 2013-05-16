@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" applicationComplete="init()" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#F0E1FC, #D3F6BE]">
+<mx:Script>
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+//		[Bindable]
+//		private var dataLine1:ArrayCollection = new ArrayCollection(
+//		[
+//		{sales : "1689.03", linenum : "1"},
+//		{sales : "3390.0", linenum : "2"},
+//		{sales : "5151.0", linenum : "3"}
+//		]
+//		);
+//		[Bindable]
+		private var dataLine:ArrayCollection;
+		private function init():void
+		{
+			lineData.getLineData();		
+			dataLine.toString();					
+			Alert.show("Data sucessfull");	
+		}	
+		
+		private function getData():void
+		{
+			var text:String = txtNum.text;
+			var start:Date = startDate.selectedDate;
+			var end:Date = endDate.selectedDate;
+			var sTime:String = DateField.dateToString(start,"YYYY-MM-DD");
+			var eTime:String = DateField.dateToString(end, "YYYY-MM-DD");
+			
+			lineData.getLineData(text, sTime, eTime);
+			volume.getVolumeData(text, sTime, eTime);
+		}
+		
+		private function handleResult(event:ResultEvent):void
+		{
+//			Alert.show();			
+			dataLine = ArrayCollection(event.result);
+			lineChart2.dataProvider = event.result;
+		}
+		
+		private var dataColume:ArrayCollection;
+		private function columnData():void{
+			volume.getVolumeData();
+		}
+		private function volumeResult(event:ResultEvent):void{
+			dataColume = ArrayCollection(event.result);
+			columnchart1.dataProvider = event.result;
+		}
+		private function changeDate():void{
+			var date:Date = startDate.selectedDate;
+			if(date==null){
+			}else
+			{
+				endDate.selectedDate = getNextDate(date,true);
+			}
+		}
+		
+		 private function changeDateBefore():void {
+         	var date:Date = endDate.selectedDate;
+            if (date == null){
+            
+            }                           
+            else{    	
+            	startDate.selectedDate = getNextDate(date,false);           
+            }
+         }
+         private function getNextDate(date:Date, isAdd:Boolean):Date{
+//         	if(radiogroup1.selectedValue){}
+         	var select:String = String(radiogroup1.selectedValue);
+         	var newDate:Date = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+//         	var next:Date;
+         	if(isAdd){
+         		if(select=="5"){
+         			newDate.setDate(newDate.getDate()+4); 
+         		}
+         		if(select=="7"){
+         			newDate.setDate(newDate.getDate()+6);
+         		}
+         		if(select=="30"){
+         			newDate.setMonth(newDate.getMonth()+1);
+         		}
+         		if(select=="90"){
+         			newDate.setMonth(newDate.getMonth()+3);
+         		}
+         		if(select=="180"){
+         			newDate.setMonth(newDate.getMonth()+6);
+         		}
+         		if(select=="365"){
+         			newDate.setFullYear(newDate.getFullYear()+1);
+         		}
+         		if(select=="730"){
+         			newDate.setFullYear(newDate.getFullYear()+2);
+         		}
+         		if(select=="1825"){
+         			newDate.setFullYear(newDate.getFullYear()+5);
+         		}
+         	}
+         	else{
+         		if(select=="5"){
+         			newDate.setDate(newDate.getDate()-4);
+         		}
+         		if(select=="7"){
+         			newDate.setDate(newDate.getDate()-6);
+         		}
+         		if(select=="30"){
+         			newDate.setMonth(newDate.getMonth()-1);
+         		}
+         		if(select=="90"){
+         			newDate.setDate(newDate.getMonth()-3);
+         		}
+         		
+         		if(select=="180"){
+         			newDate.setDate(newDate.getMonth()-6);
+         		}
+         		if(select=="365"){
+         			newDate.setFullYear(newDate.getFullYear()-1);
+         		}
+         		if(select=="730"){
+         			newDate.setFullYear(newDate.getFullYear()-2);
+         		} 		
+         		if(select=="1825"){
+         			newDate.setFullYear(newDate.getFullYear()-5);
+         		}
+         	}       	        	
+         	return newDate;
+         }        
+         [Bindable]
+            public var indicators:ArrayCollection = new ArrayCollection(
+                [ {label:"MA", data:1}, 
+                  {label:"EMA", data:2}, 
+                  {label:"RSI", data:3},
+                  {label:"MFI", data:4}
+                ]);
+         private function closeHandler(event:Event):void{
+         	tITxt.text = "You selected: " + ComboBox(event.target).selectedItem.label;
+         	myData.text = "Data: " +  ComboBox(event.target).selectedItem.data;
+         }
+         private function changePeriod():void{
+         	if(cmbTI.selectedLabel!=null){
+         		var type:String = cmbTI.selectedLabel;
+         		calData(ArrayCollection(lineChart2.dataProvider),type);
+         	}
+         }
+         private function calData(data:ArrayCollection, type:String):void{
+         	var addData:ArrayCollection = new ArrayCollection();
+			var period:Number = Number(radiogroup2.selectedValue);
+			if(type=="MA")
+			{
+				for(var i:Number=period; i<data.length; i++){
+					var obj:Object = new Object();
+					obj.date=data.getItemAt(i).date;
+					var total:Number = Number(data.getItemAt(i).linenum);
+					for(var j:Number=1;j<period;j++){
+						total = total+Number(data.getItemAt(i-j).linenum);
+					}
+					obj.ave=total/period;
+					addData.addItem(obj);				
+				}
+				aveLS.dataProvider = addData;			
+			}
+			if(type=="EMA")
+			{
+				for(var i:Number=period; i<data.length;i++){
+					var obj:Object = new Object();
+					obj.date = data.getItemAt(i).date;
+					var first:Number = Number(data.getItemAt(i).linenum);
+					for(var j:Number=1; j<period;){
+						first = 2*Number(data.getItemAt(i-j).linenum) + (period-1)*first;
+					}
+					obj.ave= first/(period+1);
+					addData.addItem(obj);
+				}
+				emaLS.dataProvider = addData;
+			}
+         }
+         
+//         private function calculate():void{
+//         	var text:String = txtNum.text;
+//         	var start:Date = startDate.selectedDate;
+//         	var end:Date = endDate.selectedDate;
+//         	var sTime:String = DateField.dateToString(start,"YYYY-MM-DD");
+//         	var eTime:String = DateField.dateToString(end,"YYYY-MM-DD");
+//         	lineData.getLineData(text, sTime, eTime);
+//			volume.getVolumeData(text, sTime, eTime);
+//         }
+
+		
+	]]>
+</mx:Script>
+<mx:RemoteObject id="lineData" destination="lineData" result="handleResult(event)" fault="Alert.show('LineFailure!')">
+	
+</mx:RemoteObject>
+<mx:RemoteObject id="volume" destination="volumnData" result="volumeResult(event)">
+		
+	</mx:RemoteObject>
+	<mx:LineChart id="lineChart2" showDataTips="true" width="80%" height="246" creationComplete="init()" x="195" y="104" textAlign="center">
+	<mx:horizontalAxis>
+    	<mx:CategoryAxis  categoryField="date"/>
+    </mx:horizontalAxis>
+    <mx:series>
+    	<mx:LineSeries yField="linenum" displayName="Price"/>
+    	<mx:LineSeries yField="ma" xField="date" id="aveLS" displayName="MA" stroke="{s1}"/>
+    	<mx:LineSeries yField="ema" id="emaLS" displayName="EMA" />
+    </mx:series>
+	</mx:LineChart>
+	<mx:Legend dataProvider="{lineChart2}" width="89" height="23" x="195" y="358"/>
+	<mx:Button x="10" y="174" label="Search" id="okBtn" click="getData()"/>
+	<mx:TextInput x="10" y="144" id="txtNum" width="177"/>
+	<mx:Label x="10" y="113" text="Stock Name:" fontFamily="Times New Roman" fontSize="15"/>
+	<mx:Label x="452" y="10" text="Time Series Plotter" fontFamily="Times New Roman" fontSize="27" textAlign="center"/>
+	<mx:SolidColor id="sc1" color="yellow" alpha=".8"/>
+	<mx:Stroke id="s1" color="yellow" weight="2"/>
+	<mx:ColumnChart x="195" y="406" id="columnchart1" width="80%" height="255" creationComplete="columnData()" textAlign="right"
+	 showDataTips="true">
+	 <mx:horizontalAxis>
+	 	<mx:CategoryAxis categoryField="date">
+	 		
+	 	</mx:CategoryAxis>
+	 </mx:horizontalAxis>
+		<mx:series>
+			<mx:ColumnSeries displayName="Volume" yField="linenum" fill="{sc1}" stroke="{s1}"/>
+		</mx:series>
+	</mx:ColumnChart>
+	<mx:Legend dataProvider="{columnchart1}" x="195" y="669"/>
+	<mx:Button x="108" y="174" label="Reset"/>
+	<mx:Style source="style.css"/>
+	
+	<mx:RadioButtonGroup id="radiogroup1"/>
+	<mx:RadioButton x="10" y="216" label="5D" value="5" groupName="radiogroup1" selected="true"/>
+	<mx:RadioButton x="47" y="216" label="1W" value="7" groupName="radiogroup1"/>
+	<mx:RadioButton x="89" y="216" label="1M" value="30" groupName="radiogroup1"/>
+	<mx:RadioButton x="127" y="216" label="3M" value="90" groupName="radiogroup1"/>
+	<mx:RadioButton x="9" y="242" label="6M" value="180" groupName="radiogroup1"/>
+	<mx:RadioButton x="47" y="241" label="1Y" value="365" groupName="radiogroup1"/>
+	<mx:RadioButton x="89" y="241" label="2Y" value="730" groupName="radiogroup1"/>
+	<mx:RadioButton x="128" y="241" label="5Y" value="1825" groupName="radiogroup1"/>
+	<mx:DateField x="17" y="276" width="131" id="startDate" change="changeDate()" 
+		yearNavigationEnabled="true"/>
+	<mx:DateField x="17" y="328" width="131" id="endDate" change="changeDateBefore()"
+		 yearNavigationEnabled="true"/>
+	<mx:Label x="17" y="306" text="To"/>
+	<mx:ComboBox x="7" y="394" width="145"  dataProvider="{indicators}" id="cmbTI" close="closeHandler(event);">
+	</mx:ComboBox>
+	<mx:Label x="16" y="365" text="Technical indicators" id="tITxt"/>
+	<mx:Label x="16" y="424" text="Label" id="myData"/>
+	<mx:RadioButtonGroup id="radiogroup2" change="changePeriod()"/>
+	<mx:RadioButton x="10" y="453" label="5D" value="5" groupName="radiogroup2"/>
+	<mx:RadioButton x="52" y="453" label="10D" value="10" groupName="radiogroup2"/>
+	<mx:RadioButton x="101" y="453" label="1M" value="30" groupName="radiogroup2"/>
+	<mx:RadioButton x="10" y="474" label="2M" value="60" groupName="radiogroup2"/>
+	<mx:RadioButton x="52" y="474" label="6M" value="180" groupName="radiogroup2"/>
+	<mx:RadioButton x="101" y="474" label="250D" value="250" groupName="radiogroup2"/>
+	
+</mx:Application>

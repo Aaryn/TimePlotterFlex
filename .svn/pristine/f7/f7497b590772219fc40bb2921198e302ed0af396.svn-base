@@ -1,0 +1,64 @@
+package model.dao.impl;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import model.dao.MySqlStatement;
+
+
+public class SampleDao {
+
+	public ArrayList getLineData(){
+		String query = "select Date, HSI from timeseriesplotter_close order by Date";
+		ResultSet rs = MySqlStatement.executeSqlQuery(query);
+		ArrayList<Map<String,String>> list = new ArrayList<Map<String, String>>();
+		try{
+			while(rs.next()){
+				Map<String,String> dataMap = new HashMap<String, String>();
+				String date = rs.getString("Date");
+				float num = rs.getFloat("HSI");
+				dataMap.put("date", String.valueOf(date));
+				dataMap.put("linenum", String.valueOf(num));
+				list.add(dataMap);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public ArrayList getLineData(String orderNum, String start, String end){
+		String query = "";
+		if(start==""||end==""){
+		query = "select Date, `"+orderNum+"` from timeseriesplotter_close order by Date";
+		}else{
+			query = "select Date, `"+orderNum+"` from timeseriesplotter_close where Date between '"+start+"' and '"+end+"' order by Date";
+		}
+		
+		ResultSet rs = MySqlStatement.executeSqlQuery(query);
+		ArrayList<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		try {
+			while(rs.next()){
+				Map<String,String> dataMap = new HashMap<String,String>();
+				String	date = rs.getString("Date");
+				float num = rs.getFloat(orderNum);
+				dataMap.put("date", String.valueOf(date));
+				dataMap.put("linenum", String.valueOf(num));
+				list.add(dataMap);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public static void main(String[] args){
+		SampleDao dao = new SampleDao();
+//		dao.getData();
+	}
+}

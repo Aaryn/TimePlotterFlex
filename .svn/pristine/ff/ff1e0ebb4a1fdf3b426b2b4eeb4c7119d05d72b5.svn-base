@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" applicationComplete="init()" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#F0E1FC, #D3F6BE]">
+<mx:Script>
+	<![CDATA[
+		import mx.collections.ArrayCollection;
+		import mx.rpc.events.ResultEvent;
+		import mx.controls.Alert;
+		[Bindable]
+		private var dataLine1:ArrayCollection = new ArrayCollection(
+		[
+		{sales : "1689.03", linenum : "1"},
+		{sales : "3390.0", linenum : "2"},
+		{sales : "5151.0", linenum : "3"}
+		]
+		);
+		[Bindable]
+		private var dataLine:ArrayCollection;
+		private function init():void
+		{
+			
+			dataLine = ArrayCollection(lineData.getLineData());
+			Alert.show(String(dataLine1));
+			dataLine.toString();
+			Alert.show(String(dataLine1));
+			
+			Alert.show("Data sucessfull");	
+		}
+		
+		
+		
+		private function getData():void
+		{
+			var text:String = txtNum.text;
+			lineData.getLineData(text);
+		}
+		
+		private function handleResult(event:ResultEvent):void
+		{
+//			Alert.show());
+			lineChart2.dataProvider = event.result;
+		}
+		
+		private var dataColume:ArrayCollection;
+		private function columnData():void{
+			dataColume = ArrayCollection(volume.getVolumeData());
+		}
+		private function volumeResult(event:ResultEvent):void{
+			columnchart1.dataProvider = event.result;
+		}
+		
+//		private function getLineData():ArrayCollection
+//		{
+//			var ac:ArrayCollection = lineData.getLineData();
+//			return ac;
+//		}
+//		
+//		private function handleResult(event:ResultEvent):void
+//		{
+//			var ac:ArrayCollection = lineData.getLineData();
+//			lineChart1.dataProvider=ac;
+//			Alert.show(String(ac));result="handleResult(event)"
+//		}
+		
+	]]>
+</mx:Script>
+<mx:RemoteObject id="lineData" destination="lineData" result="handleResult(event)" fault="Alert.show('LineFailure!')">
+	
+</mx:RemoteObject>
+<mx:RemoteObject id="volume" destination="volumnData" result="volumeResult(event)">
+		
+	</mx:RemoteObject>
+	<mx:LineChart id="lineChart2" showDataTips="true" width="80%" height="246" creationComplete="init()" x="195" y="104" textAlign="right">
+	<mx:horizontalAxis>
+    	<mx:CategoryAxis  categoryField="date"/>
+    </mx:horizontalAxis>
+    <mx:series>
+    	<mx:LineSeries yField="linenum" displayName="Price"/>
+    </mx:series>
+	</mx:LineChart>
+	<mx:Legend dataProvider="{lineChart2}" width="89" height="23" x="195" y="358"/>
+	<mx:Button x="10" y="174" label="Search" id="okBtn" click="getData()"/>
+	<mx:TextInput x="10" y="144" id="txtNum" width="177"/>
+	<mx:Label x="10" y="113" text="Stock Name:" fontFamily="Times New Roman" fontSize="15"/>
+	<mx:Label x="452" y="10" text="Time Series Plotter" fontFamily="Times New Roman" fontSize="27" textAlign="left"/>
+	<mx:SolidColor id="sc1" color="yellow" alpha=".8"/>
+	<mx:Stroke id="s1" color="yellow" weight="2"/>
+	<mx:ColumnChart x="195" y="406" id="columnchart1" width="80%" height="255" creationComplete="columnData()" textAlign="right"
+	 showDataTips="true">
+	 <mx:horizontalAxis>
+	 	<mx:CategoryAxis categoryField="date">
+	 		
+	 	</mx:CategoryAxis>
+	 </mx:horizontalAxis>
+		<mx:series>
+			<mx:ColumnSeries displayName="Volume" yField="linenum" fill="{sc1}" stroke="{s1}"/>
+		</mx:series>
+	</mx:ColumnChart>
+	<mx:Legend dataProvider="{columnchart1}" x="195" y="669"/>
+	<mx:Button x="108" y="174" label="Reset"/>
+	<mx:Style source="style.css"/>
+	<mx:RadioButtonGroup id="radiogroup1"/>
+	<mx:RadioButton x="10" y="216" label="5D" groupName="radiogroup1"/>
+	<mx:RadioButton x="47" y="216" label="1W" groupName="radiogroup1"/>
+	<mx:RadioButton x="89" y="216" label="1M" groupName="radiogroup1"/>
+	<mx:RadioButton x="127" y="216" label="3M" groupName="radiogroup1"/>
+	<mx:RadioButton x="9" y="242" label="6M" groupName="radiogroup1"/>
+	<mx:RadioButton x="47" y="241" label="1Y" groupName="radiogroup1"/>
+	<mx:RadioButton x="89" y="241" label="2Y" groupName="radiogroup1"/>
+	<mx:RadioButton x="128" y="241" label="5Y" groupName="radiogroup1"/>
+	<mx:DateField x="10" y="271" width="76"/>
+	<mx:DateField x="117" y="271" width="70"/>
+	<mx:Label x="94" y="275" text="To"/>
+</mx:Application>
