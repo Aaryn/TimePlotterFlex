@@ -112,12 +112,7 @@ ComboBox
 	fontSize:12;
 	
 }
-LineChart
-{
-	textAlign: center;
-	gridLinesStyleName: lineChartGridLines;
-	color: #995425;
-}
+
 TextInput
 {
 	cornerRadius:5;
@@ -188,7 +183,7 @@ RadioButton
 ColumnChart
 {
 	textAlign: right;
-	color:#995425
+	color:#FFFFFF
 }
 .comboBoxDropdown
 {

@@ -2,9 +2,6 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" applicationComplete="init()" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FBAE89, #F1E4FC]">
 <mx:Script>
 	<![CDATA[
-		import mx.charts.events.ChartEvent;
-		import mx.charts.series.items.LineSeriesItem;
-		import mx.charts.events.ChartItemEvent;
 		import mx.collections.ArrayCollection;
 		import mx.rpc.events.ResultEvent;
 		import mx.controls.Alert;
@@ -12,7 +9,6 @@
 
 		private var dataLine:ArrayCollection;
 		private var aveDataLine:ArrayCollection;
-		private var canReset:Boolean = false;
 		private function init():void
 		{
 			lineData.getLineData();							
@@ -246,35 +242,6 @@
          	emaLS.dataProvider = null;
          	linechart1.visible = false;
          }
-         private function onZoom(event:ChartItemEvent):void{
-         	var lc:LineChart = event.target as LineChart;
-         	for each(var ls:LineSeries in lc.series){
-         		var ac:ArrayCollection = new ArrayCollection();
-         		var dp:ArrayCollection = ls.dataProvider as ArrayCollection;
-         		for each(var lsi:LineSeriesItem in ls.selectedItems)
-         		{
-         			ac.addItem(lsi.item);
-         		}
-         		ls.dataProvider = ac;
-         	}
-         	lc.clearSelection();
-         	canReset = true;
-         }
-         private function onReset(event:ChartEvent):void{
-         	if(canReset){
-         		var lc:LineChart = event.target as LineChart;
-         		for(var i:int=0; i<lc.series.length;i++){
-         			var ls:LineSeries = lc.series[i] as LineSeries;
-         			ls.dataProvider = lineChart2.dataProvider;
-         		}
-         		canReset = false;
-         	}
-         }
-        private function parseDate(value:String):Date
-            {
-                var dateArray:Array = value.split("-");
-                return new Date(dateArray[2], dateArray[0] -1, dateArray[1]);
-            }
          
 //         private function calculate():void{
 //         	var text:String = txtNum.text;
@@ -346,21 +313,13 @@
 	<mx:Label y="86" text="by Aaryn" right="41"/>
 	<mx:Image y="86" source="images/butterfly.png" right="41"/>
 	<mx:VBox y="160" width="80%" height="530" backgroundColor="#73715C" x="241">
-		<mx:LineChart id="lineChart2" showDataTips="true" width="90%" height="162" creationComplete="init()" paddingTop="10" color="#FFFFFF"
-			 chartDoubleClick="onReset(event)" change="onZoom(event)" doubleClickEnabled="true" seriesFilters="[]" selectionMode="multiple">
+		<mx:LineChart id="lineChart2" showDataTips="true" width="90%" height="162" creationComplete="init()" paddingTop="10" color="#FFFFFF">
 		 <mx:verticalAxis>
             <mx:LinearAxis baseAtZero="false" title="Price" />
         </mx:verticalAxis>
 		<mx:horizontalAxis>
 			<mx:CategoryAxis  categoryField="date" id="ld"/>
-			
 		</mx:horizontalAxis>
-		<!--<mx:horizontalAxis>
-			<mx:DateTimeAxis id="hAxis" parseFunction="parseDate" 
-                alignLabelsToUnits="false"/>
-                
-		</mx:horizontalAxis>-->
-		
 		<mx:horizontalAxisRenderers>
             <mx:AxisRenderer axis="{ld}" canDropLabels="true" />
         </mx:horizontalAxisRenderers>
